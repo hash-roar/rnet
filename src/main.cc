@@ -1,24 +1,20 @@
-#include <boost/asio.hpp>
+#include <algorithm>
 #include <boost/asio/io_context.hpp>
-#include <boost/asio/io_service.hpp>
-#include <boost/asio/steady_timer.hpp>
-#include <boost/system/error_code.hpp>
-#include <chrono>
-#include <iostream>
+#include <boost/asio/ip/address.hpp>
+#include <boost/asio/ip/tcp.hpp>
+#include "ProxyServer.h"
+#include "base.h"
 
-namespace as = boost::asio;
-using erroc = boost::system::error_code;
-
-void callback(const erroc& ec)
-{
-  std::cout << "hello" << std::endl;
-}
+using namespace boost::asio::ip;
+using namespace boost::asio;
 
 int main()
 {
-  as::io_context io;
-  as::steady_timer timer(io, std::chrono::seconds(5));
-  timer.async_wait(&callback);
-  io.run();
-  return 0;
+  io_context io_context;
+  Endpoint listen(tcp::v4(), 7999);
+  Endpoint target(ip::address::from_string("127.0.0.1"), 8000);
+  ProxyServer server(io_context, std::move(listen), std::move(target));
+
+  server.start();
+  io_context.run();
 }

@@ -3,6 +3,7 @@
 
 #include "base.h"
 #include <algorithm>
+#include <boost/asio/ip/tcp.hpp>
 
 // brefore establish proxyserver ,a endpoint shoud be resolved first
 
@@ -12,12 +13,17 @@ class ProxyServer : public base::noncopyable {
       : io_(io)
       , listen_endpoint_(std::move(listen))
       , target_endpoient_(std::move(target))
-      , acceptor_(io, listen_endpoint_)
+      , acceptor_{io, {boost::asio::ip::tcp::v4(),7999}}
   //, socket_(io)
   {
   }
 
   void start();
+  void setReuseAddress(bool on = true)
+  {
+    if (on) {
+    }
+  }
 
   private:
   IoContext& io_;
@@ -27,4 +33,5 @@ class ProxyServer : public base::noncopyable {
   Endpoint target_endpoient_;
 };
 
+#include "ProxyServer.h"
 #endif

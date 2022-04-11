@@ -7,7 +7,7 @@
 void ProxyServer::start()
 {
   auto conn_ptr = std::make_shared<ProxyConnection>(io_);
-  acceptor_.async_accept(conn_ptr->ClientSocket(), [=](std::error_code error) {
+  acceptor_.async_accept(conn_ptr->ClientSocket(), [this,conn_ptr](std::error_code error) {
       if (error) {
         //TODO Debug
       }

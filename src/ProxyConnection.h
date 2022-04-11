@@ -23,7 +23,11 @@ class ProxyConnection : std::enable_shared_from_this<ProxyConnection>,
   void write_to_client(size_t n);
   void read_from_server();
   void write_to_server(size_t n);
-  void stop();
+  void stop()
+  {
+    client_socket_.close();
+    server_socket_.close();
+  }
 
   private:
   AsioSocket client_socket_;
